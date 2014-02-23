@@ -13,12 +13,16 @@ class Handler(StreamRequestHandler):
         data = True
         while data:
             data = self.request.recv(2048)
-            print "receive data:" + data ,addr
             if data == "Play":
+                print "receive data:" + data ,addr
                 PlayerCore.play()
             elif data == "Next":
+                print "receive data:" + data ,addr
                 PlayerCore.playNext()
-                    
+            elif data == "Info":
+                info = PlayerCore.getInfo()
+                jsonInfo = json.dumps(info)
+                self.wfile.write(jsonInfo)
 
 def ringer():
     while True:

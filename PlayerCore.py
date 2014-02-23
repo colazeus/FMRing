@@ -4,6 +4,7 @@ from threading import Timer
 global player
 global isPlayerOn
 global songTimer
+global nowPlayingSong
 isPlayerOn = False
 songQueue = Queue.Queue(0)
 
@@ -42,11 +43,13 @@ def play():
 	global player
 	global songTimer
 	global songQueue
+	global nowPlayingSong
 
 	if isPlayerOn == False:
 		if songQueue.qsize() == 0:
 			reloadSongQueue()
 		song = songQueue.get()
+		nowPlayingSong = song
 		player = subprocess.Popen(['mplayer',song['url']])
 		songTimer = Timer(song['length'],endSong)
 		songTimer.start()
@@ -68,3 +71,12 @@ def playNext():
 	if isPlayerOn == True:
 		play()
 		play()
+
+def getInfo():
+	global nowPlayingSong
+	if isPlayerOn == False:
+		error = {'error':0}
+		return error
+	else:
+		return nowPlayingSong
+
