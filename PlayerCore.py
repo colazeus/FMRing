@@ -1,4 +1,4 @@
-import subprocess,Queue,urllib,httplib,json
+import subprocess,Queue,urllib,httplib,json,os,signal
 from threading import Timer
 
 global player
@@ -36,6 +36,7 @@ def reloadSongQueue():
 	songQueue.put(songlist[4])
 
 def endSong():
+	global player
 	playNext()
 
 def play():
@@ -50,13 +51,14 @@ def play():
 			reloadSongQueue()
 		song = songQueue.get()
 		nowPlayingSong = song
-		player = subprocess.Popen(['mplayer',song['url']])
+		player = subprocess.Popen(['mplayer',song['url']],close_fds=True, preexec_fn = os.setsid)
 		songTimer = Timer(song['length'],endSong)
 		songTimer.start()
 		isPlayerOn = True
 		print "Player On:",song['title']
 	else:
 		songTimer.cancel()
+		os.killpg(player.pid,signal.SIGUSR1)
 		player.kill()
 		isPlayerOn = False
 		print "player Stop"
@@ -68,6 +70,7 @@ def ring():
 
 def playNext():
 	global isPlayerOn
+	global player
 	if isPlayerOn == True:
 		play()
 		play()
