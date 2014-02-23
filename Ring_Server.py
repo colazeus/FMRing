@@ -1,7 +1,7 @@
 import subprocess,urllib,httplib,json,time,thread,PlayerCore
 from SocketServer import TCPServer,StreamRequestHandler,ThreadingMixIn
 
-ring_time = "12-42"
+ring_time = "09-00"
 
 class Server(TCPServer,ThreadingMixIn):pass
 
